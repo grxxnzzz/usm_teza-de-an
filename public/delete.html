@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Delete Clients and Hotels</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <nav>
+            <li><a class="inactive" href="./index.html">Dashboard</a></li>
+            <li><a class="active" href="./delete.html">DB Management</a></li>
+        </nav>
+        
+        <div class="container">
+            <div class="dashboard">
+                <section class="dashboard-client">
+                    <div class="d-container">
+                        <h1 class="d-title"><i class="bi bi-file-person"></i> Клиенты</h1>
+                        <span class="d-desc">Удалить клиентов из базы данных</span>
+                    </div>
+                    <div class="d-container">
+                        <ul id="client-list" class="data-showcase"></ul>
+                    </div>
+                </section>
+
+                <section class="dashboard-hotel">
+                    <div class="d-container">
+                        <h1 class="d-title"><i class="bi bi-houses"></i> Отели</h1>
+                        <span class="d-desc">Удалить отели из базы данных</span>
+                    </div>
+                    <div class="d-container">
+                        <ul id="hotel-list" class="data-showcase"></ul>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const clientList = document.getElementById('client-list');
+                const hotelList = document.getElementById('hotel-list');
+
+                // Fetch and display clients
+                const fetchClients = async () => {
+                    try {
+                        const res = await fetch('/api/clients');
+                        if (!res.ok) {
+                            throw new Error(`Failed to fetch clients: ${res.status} ${res.statusText}`);
+                        }
+                        const clients = await res.json();
+                        clientList.innerHTML = '';
+                        clients.forEach(client => {
+                            const li = document.createElement('li');
+                            li.innerHTML = `${client.name} (${client.contact}) <button class="d-f-button cautious" onclick="deleteClient(${client.id})">Удалить</button>`;
+                            clientList.appendChild(li);
+                        });
+                    } catch (err) {
+                        console.error('Error fetching clients:', err);
+                        alert('Не удалось загрузить список клиентов: ' + err.message);
+                    }
+                };
+
+                // Fetch and display hotels
+                const fetchHotels = async () => {
+                    try {
+                        const res = await fetch('/api/hotels');
+                        if (!res.ok) {
+                            throw new Error(`Failed to fetch hotels: ${res.status} ${res.statusText}`);
+                        }
+                        const hotels = await res.json();
+                        hotelList.innerHTML = '';
+                        hotels.forEach(hotel => {
+                            const li = document.createElement('li');
+                            li.innerHTML = `${hotel.name} - ${hotel.location} (${hotel.free_rooms} мест) <button class="d-f-button cautious" onclick="deleteHotel(${hotel.id})">Удалить</button>`;
+                            hotelList.appendChild(li);
+                        });
+                    } catch (err) {
+                        console.error('Error fetching hotels:', err);
+                        alert('Не удалось загрузить список отелей: ' + err.message);
+                    }
+                };
+
+                // Delete client
+                window.deleteClient = async (id) => {
+                    console.log('Deleting client with ID:', id); // Log the ID being sent
+                    try {
+                        const res = await fetch(`/api/clients/${id}`, {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        if (!res.ok) {
+                            const contentType = res.headers.get('content-type');
+                            if (contentType && contentType.includes('application/json')) {
+                                const error = await res.json();
+                                throw new Error(error.error || 'Unknown error');
+                            } else {
+                                const text = await res.text();
+                                console.error('Non-JSON response:', text);
+                                throw new Error(`Server returned non-JSON response: ${res.status} ${res.statusText}`);
+                            }
+                        }
+                        const data = await res.json();
+                        alert(data.message);
+                        fetchClients();
+                    } catch (err) {
+                        console.error('Delete client error:', err);
+                        alert(`Ошибка при удалении клиента: ${err.message}`);
+                    }
+                };
+
+                // Delete hotel
+                window.deleteHotel = async (id) => {
+                    console.log('Deleting hotel with ID:', id); // Log the ID being sent
+                    try {
+                        const res = await fetch(`/api/hotels/${id}`, {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        if (!res.ok) {
+                            const contentType = res.headers.get('content-type');
+                            if (contentType && contentType.includes('application/json')) {
+                                const error = await res.json();
+                                throw new Error(error.error || 'Unknown error');
+                            } else {
+                                const text = await res.text();
+                                console.error('Non-JSON response:', text);
+                                throw new Error(`Server returned non-JSON response: ${res.status} ${res.statusText}`);
+                            }
+                        }
+                        const data = await res.json();
+                        alert(data.message);
+                        fetchHotels();
+                    } catch (err) {
+                        console.error('Delete hotel error:', err);
+                        alert(`Ошибка при удалении отеля: ${err.message}`);
+                    }
+                };
+
+                // Initialize data
+                fetchClients();
+                fetchHotels();
+            });
+        </script>
+    </body>
+</html>
