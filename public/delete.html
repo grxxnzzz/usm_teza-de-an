@@ -33,6 +33,16 @@
                         <ul id="hotel-list" class="data-showcase"></ul>
                     </div>
                 </section>
+
+                <section class="dashboard-booking">
+                    <div class="d-container">
+                        <h1 class="d-title"><i class="bi bi-ticket"></i> Бронирования</h1>
+                        <span class="d-desc">Отменить бронирования</span>
+                    </div>
+                    <div class="d-container">
+                        <ul id="booking-list" class="data-showcase"></ul>
+                    </div>
+                </section>
             </div>
         </div>
 
@@ -40,8 +50,9 @@
             document.addEventListener('DOMContentLoaded', () => {
                 const clientList = document.getElementById('client-list');
                 const hotelList = document.getElementById('hotel-list');
+                const bookingList = document.getElementById('booking-list');
 
-                // Fetch and display clients
+                // Получение и отображение клиентов
                 const fetchClients = async () => {
                     try {
                         const res = await fetch('/api/clients');
@@ -61,7 +72,7 @@
                     }
                 };
 
-                // Fetch and display hotels
+                // Получение и отображение отелей
                 const fetchHotels = async () => {
                     try {
                         const res = await fetch('/api/hotels');
@@ -81,9 +92,29 @@
                     }
                 };
 
-                // Delete client
+                // Получение и отображение бронирований
+                const fetchBookings = async () => {
+                    try {
+                        const res = await fetch('/api/bookings');
+                        if (!res.ok) {
+                            throw new Error(`Failed to fetch bookings: ${res.status} ${res.statusText}`);
+                        }
+                        const bookings = await res.json();
+                        bookingList.innerHTML = '';
+                        bookings.forEach(booking => {
+                            const li = document.createElement('li');
+                            li.innerHTML = `${booking.client_name} забронировал ${booking.rooms_booked} мест в ${booking.hotel_name} <button class="d-f-button cautious" onclick="cancelBooking(${booking.id})">Отменить</button>`;
+                            bookingList.appendChild(li);
+                        });
+                    } catch (err) {
+                        console.error('Error fetching bookings:', err);
+                        alert('Не удалось загрузить список бронирований: ' + err.message);
+                    }
+                };
+
+                // Удаление клиента
                 window.deleteClient = async (id) => {
-                    console.log('Deleting client with ID:', id); // Log the ID being sent
+                    console.log('Deleting client with ID:', id);
                     try {
                         const res = await fetch(`/api/clients/${id}`, {
                             method: 'DELETE',
@@ -109,9 +140,9 @@
                     }
                 };
 
-                // Delete hotel
+                // Удаление отеля
                 window.deleteHotel = async (id) => {
-                    console.log('Deleting hotel with ID:', id); // Log the ID being sent
+                    console.log('Deleting hotel with ID:', id);
                     try {
                         const res = await fetch(`/api/hotels/${id}`, {
                             method: 'DELETE',
@@ -137,9 +168,38 @@
                     }
                 };
 
-                // Initialize data
+                // Отмена бронирования
+                window.cancelBooking = async (id) => {
+                    console.log('Cancelling booking with ID:', id);
+                    try {
+                        const res = await fetch(`/api/bookings/${id}`, {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        if (!res.ok) {
+                            const contentType = res.headers.get('content-type');
+                            if (contentType && contentType.includes('application/json')) {
+                                const error = await res.json();
+                                throw new Error(error.error || 'Unknown error');
+                            } else {
+                                const text = await res.text();
+                                console.error('Non-JSON response:', text);
+                                throw new Error(`Server returned non-JSON response: ${res.status} ${res.statusText}`);
+                            }
+                        }
+                        const data = await res.json();
+                        alert(data.message);
+                        fetchBookings();
+                    } catch (err) {
+                        console.error('Cancel booking error:', err);
+                        alert(`Ошибка при отмене бронирования: ${err.message}`);
+                    }
+                };
+
+                // Инициализация данных
                 fetchClients();
                 fetchHotels();
+                fetchBookings();
             });
         </script>
     </body>

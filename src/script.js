@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const res = await fetch('/api/clients');
         const clients = await res.json();
         clientList.innerHTML = '';
-        bookingClientSelect.innerHTML = '<option value="">-- Выберите клиента --</option>';
+        bookingClientSelect.innerHTML = '<option value="">Выберите клиента</option>';
         clients.forEach(client => {
             clientList.innerHTML += `<li>${client.name} (${client.contact})</li>`;
             bookingClientSelect.innerHTML += `<option value="${client.id}">${client.name}</option>`;
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const res = await fetch('/api/hotels');
         const hotels = await res.json();
         hotelList.innerHTML = '';
-        bookingHotelSelect.innerHTML = '<option value="">-- Выберите отель --</option>';
+        bookingHotelSelect.innerHTML = '<option value="">Выберите отель</option>';
         hotels.forEach(hotel => {
             hotelList.innerHTML += `<li>${hotel.name} - ${hotel.location} (${hotel.free_rooms} мест)</li>`;
             bookingHotelSelect.innerHTML += `<option value="${hotel.id}">${hotel.name}</option>`;
