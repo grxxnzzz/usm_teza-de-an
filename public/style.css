@@ -33,7 +33,8 @@ body {
 .container {
     display: flex;
     justify-content: center;
-    align-items: center;
+    height: 100%;
+    width: 100%;
 }
 
 nav {
@@ -45,6 +46,8 @@ nav {
     gap: 1rem;
     justify-content: center;
     align-items: center;
+
+    margin-bottom: 1rem;
 }
 
 nav li {
@@ -86,7 +89,7 @@ nav .inactive:hover {
 .dashboard {
     display: flex;
     justify-content: center;
-    align-items: center;
+    /* align-items: center; */
     gap: 5rem;
 }
 
@@ -189,8 +192,6 @@ button:hover {
     display: flex;
     flex-direction: column;
     padding: .2rem;
-    
-    align-self: flex-start;
 }
 .shownData {
     display: flex;
@@ -214,4 +215,12 @@ button:hover {
     display: flex;
     justify-content: space-between;
     align-items:center;
+}
+
+.self-flex-start {
+    align-self: flex-start;
+}
+
+.self-center {
+    align-self: center !important;
 }

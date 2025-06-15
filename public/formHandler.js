@@ -5,18 +5,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const clientList = document.getElementById('client-list');
     const hotelList = document.getElementById('hotel-list');
     const bookingList = document.getElementById('booking-list');
-    const bookingClientSelect = document.getElementById('booking-client');
-    const bookingHotelSelect = document.getElementById('booking-hotel');
+    const clientSelect = document.getElementById('clientName');
+    const hotelSelect = document.getElementById('hotelName');
 
     // Fetch and display clients
     const fetchClients = async () => {
         const res = await fetch('/api/clients');
         const clients = await res.json();
         clientList.innerHTML = '';
-        bookingClientSelect.innerHTML = '<option value="">Выберите клиента</option>';
+        clientSelect.innerHTML = '<option value="">Выберите клиента</option>';
         clients.forEach(client => {
-            clientList.innerHTML += `<li>${client.name} (${client.contact})</li>`;
-            bookingClientSelect.innerHTML += `<option value="${client.id}">${client.name}</option>`;
+            clientList.innerHTML += `<li>${client.name} <sup class="d-desc">(${client.contact})</sup></li>`;
+            clientSelect.innerHTML += `<option value="${client.id}">${client.name}</option>`;
         });
     };
 
@@ -25,10 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const res = await fetch('/api/hotels');
         const hotels = await res.json();
         hotelList.innerHTML = '';
-        bookingHotelSelect.innerHTML = '<option value="">Выберите отель</option>';
+        hotelSelect.innerHTML = '<option value="">Выберите отель</option>';
         hotels.forEach(hotel => {
-            hotelList.innerHTML += `<li>${hotel.name} - ${hotel.location} (${hotel.free_rooms} мест)</li>`;
-            bookingHotelSelect.innerHTML += `<option value="${hotel.id}">${hotel.name}</option>`;
+            hotelList.innerHTML += `<li>${hotel.name} - ${hotel.location} <sup class="d-desc">(${hotel.free_rooms} мест)</sup></li>`;
+            hotelSelect.innerHTML += `<option value="${hotel.id}">${hotel.name}</option>`;
         });
     };
 
@@ -52,6 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const formData = new FormData(clientForm);
         const data = Object.fromEntries(formData);
+        data.contact = data.contacts; // Match backend field
+        delete data.contacts;
         try {
             await fetch('/api/clients', {
                 method: 'POST',
@@ -70,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const formData = new FormData(hotelForm);
         const data = Object.fromEntries(formData);
-        data.free_rooms = parseInt(data.free_rooms);
+        data.free_rooms = parseInt(data.free_rooms); // Match backend field
         try {
             await fetch('/api/hotels', {
                 method: 'POST',
