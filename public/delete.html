@@ -13,7 +13,7 @@
         </nav>
         
         <div class="container">
-            <div class="dashboard">
+            <div class="dashboard-delete">
                 <section class="dashboard-client self-flex-start">
                     <div class="d-container">
                         <h1 class="d-title"><i class="bi bi-file-person"></i> Клиенты</h1>
@@ -63,7 +63,7 @@
                         clientList.innerHTML = '';
                         clients.forEach(client => {
                             const li = document.createElement('li');
-                            li.innerHTML = `${client.name} (${client.contact}) <button class="d-f-button cautious" onclick="deleteClient(${client.id})">Удалить</button>`;
+                            li.innerHTML = `${client.name} (${client.contact}) <button class="d-f-button alert" onclick="deleteClient(${client.id})">Удалить</button>`;
                             clientList.appendChild(li);
                         });
                     } catch (err) {
@@ -83,7 +83,7 @@
                         hotelList.innerHTML = '';
                         hotels.forEach(hotel => {
                             const li = document.createElement('li');
-                            li.innerHTML = `${hotel.name} - ${hotel.location} (${hotel.free_rooms} мест) <button class="d-f-button cautious" onclick="deleteHotel(${hotel.id})">Удалить</button>`;
+                            li.innerHTML = `${hotel.name} - ${hotel.location} (${hotel.free_rooms} мест) <button class="d-f-button alert" onclick="deleteHotel(${hotel.id})">Удалить</button>`;
                             hotelList.appendChild(li);
                         });
                     } catch (err) {
@@ -103,7 +103,7 @@
                         bookingList.innerHTML = '';
                         bookings.forEach(booking => {
                             const li = document.createElement('li');
-                            li.innerHTML = `${booking.client_name} забронировал ${booking.rooms_booked} мест в ${booking.hotel_name} <button class="d-f-button cautious" onclick="cancelBooking(${booking.id})">Отменить</button>`;
+                            li.innerHTML = `${booking.client_name} забронировал ${booking.rooms_booked} мест в ${booking.hotel_name} <button class="d-f-button alert" onclick="cancelBooking(${booking.id})">Отменить</button>`;
                             bookingList.appendChild(li);
                         });
                     } catch (err) {

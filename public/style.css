@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900\u0026family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000\u0026display=swap');
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css");
 
 :root {
@@ -10,6 +10,7 @@
     --good: #93C47D;
     --good-c: #98B98A;
     --alert: #E06666;
+    --alert-c: #de8181;
     --gray: #808080;
     --field-gray: #F3F3F3;
 }
@@ -17,6 +18,7 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 
     font-family: "Inter", sans-serif;
     font-optical-sizing: auto;
@@ -25,9 +27,8 @@
 }
 
 body {
-    overflow: hidden;
-    height: 100vh;
-    width: 100vw;
+    overflow-x: hidden;
+    min-height: 100vh;
 }
 
 .container {
@@ -35,6 +36,7 @@ body {
     justify-content: center;
     height: 100%;
     width: 100%;
+    padding: 1rem;
 }
 
 nav {
@@ -93,15 +95,21 @@ nav .inactive:hover {
     gap: 5rem;
 }
 
-.dashboard-client {
+.dashboard-delete {
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    gap: 5rem;
+}
+
+
+.dashboard-client, .dashboard-hotel, .dashboard-booking {
+    flex: 1; /* Equal width for each section */
+    min-width: 0; /* Prevents overflow due to content */
+    max-width: calc(33.333% - 3.33rem); /* Account for gap */
     display: flex;
     flex-direction: column;
     padding: .2rem;
-}
-
-.dashboard-client, .dashboard-booking, .data-showcase {
-    flex: 1; /* Equal width for each section */
-    min-width: 0; /* Prevents overflow due to content */
 }
 
 .d-form {
@@ -183,15 +191,19 @@ button:hover {
     border: 1px solid var(--cautious-c);
 }
 
-.dashboard-booking {
-    padding: .2rem;
+.d-f-button.alert {
+    background-color: var(--alert);
+    border: 1px solid var(--alert-c);
 }
+
 
 /* data showcase */
 .data-showcase {
     display: flex;
     flex-direction: column;
     padding: .2rem;
+    flex: 1;
+    min-width: 0;
 }
 .shownData {
     display: flex;
@@ -214,7 +226,31 @@ button:hover {
 
     display: flex;
     justify-content: space-between;
-    align-items:center;
+    align-items: center;
+    flex-wrap: wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    gap: .5rem;
+    line-height: 1.4;
+}
+
+/* Text content within list items should be flexible and wrap */
+#client-list li > *:not(button),
+#hotel-list li > *:not(button),
+#booking-list li > *:not(button) {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+    white-space: normal;
+}
+
+/* Ensure buttons stay fixed width */
+#client-list li button,
+#hotel-list li button,
+#booking-list li button {
+    flex: 0 0 auto;
+    white-space: nowrap;
 }
 
 .self-flex-start {
